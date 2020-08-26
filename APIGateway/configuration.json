@@ -1,0 +1,84 @@
+﻿{
+
+
+    "ConsulConfig": {
+        "Address": "http://127.0.0.1:8500",
+        "ServiceName": "ApiGateway",
+        "ServiceID": "APIGateway-v1"
+    },
+    "DynamicReRoutes": [
+        {
+
+            "UpstreamPathTemplate": "/",
+            "ServiceName": "CatalogApi",
+            "UpstreamHttpMethod": [ "Get" ],
+            "RateLimitRule": {
+                "ClientWhitelist": [],
+                "EnableRateLimiting": true,
+                "Period": "1s",
+                "PeriodTimespan": 1000.0,
+                "Limit": 3
+            }
+        }
+    ],
+    "ReRoutes": [
+
+        {
+            "DownstreamPathTemplate": "/api/Catalog/{id}",
+            "DownstreamScheme": "http",
+            "DownstreamHost": "localhost",
+            "DownstreamPort": 9001,
+            "UpstreamPathTemplate": "/Catalog/{id}",
+            "UpstreamHttpMethod": [ "Get" ],
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 3,
+                "DurationOfBreak": 10,
+                "TimeoutValue": 5000
+            }
+        },
+        {
+            "DownstreamPathTemplate": "/api/Order",
+            "DownstreamScheme": "http",
+            "DownstreamPort": 9002,
+            "DownstreamHost": "localhost",
+            "UpstreamPathTemplate": "/api/Order",
+            "UpstreamHttpMethod": [ "Get" ],
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 3,
+                "DurationOfBreak": 10,
+                "TimeoutValue": 5000
+            }
+        }
+    ],
+
+    "Aggregates": [],
+    //"DynamicReRoutes": [
+    //    {
+    //        "ServiceName": "CategoryApi",
+    //        "RateLimitRule": {
+    //            "ClientWhitelist": [],
+    //            "EnableRateLimiting": true,
+    //            "Period": "1s",
+    //            "PeriodTimespan": 1000.0,
+    //            "Limit": 3
+    //        }
+    //    }
+    //],
+    "GlobalConfiguration": {
+        "RequestIdKey": null,
+        "ServiceDiscoveryProvider": {
+            "Host": "localhost",
+            "Port": 8500,
+            "Type": "Consul"
+        },
+        "RateLimitOptions": {
+            "ClientIdHeader": "ClientId",
+            "QuotaExceededMessage": "",
+            "RateLimitCounterPrefix": "",
+            "DisableRateLimitHeaders": false,
+            "HttpStatusCode": 428
+        },
+        "DownstreamScheme": "http"
+    }
+
+}
